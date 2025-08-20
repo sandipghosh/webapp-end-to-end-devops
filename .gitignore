@@ -1,0 +1,114 @@
+### -------------------------
+### .NET / ASP.NET Core
+### -------------------------
+# Build results
+bin/
+obj/
+out/
+publish/
+
+# User-specific files
+*.user
+*.rsuser
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Visual Studio cache/options
+.vs/
+*.dbmdl
+*.bak
+*.log
+*.ldf
+*.mdf
+
+# NuGet
+*.nupkg
+*.snupkg
+.nuget/
+packages/
+*.nuspec
+
+# Rider / VSCode
+.idea/
+.vscode/
+*.sln.iml
+
+# Others
+_ReSharper*/
+*.[Rr]e[Ss]harper
+*.DotSettings.user
+
+### -------------------------
+### Angular / Node.js
+### -------------------------
+# Node modules
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Angular build output
+dist/
+tmp/
+out-tsc/
+
+# Environment files (keep sample)
+src/environments/environment*.ts
+!src/environments/environment.sample.ts
+
+# IDE
+.idea/
+.vscode/
+.angular/
+*.swp
+
+### -------------------------
+### Database / Docker
+### -------------------------
+# Local database files
+*.db
+#*.sql
+*.sqlite
+*.sqlite3
+*.db-shm
+*.db-wal
+
+# MySQL/Postgres dump files
+dump*.sql
+*.bak
+*.sql.gz
+
+# Docker
+docker-compose.override.yml
+docker-compose.override.*.yml
+.env
+.env.local
+.env.*.local
+
+# Docker volumes (not tracked in git)
+volumes/
+*/_data/
+
+### -------------------------
+### OS / Misc
+### -------------------------
+# Mac
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Linux
+*~
+.nfs*
+
+# Logs
+*.log
+logs/

@@ -1,0 +1,64 @@
+version: '3.8'
+
+services:
+  webapp-database:
+    build:
+      context: ./webapp-database
+      dockerfile: Dockerfile
+    container_name: webapp-database
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./webapp-database/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    networks:
+      - webapp-network
+
+  webapp-backend:
+    build:
+      context: ./webapp-backend
+      dockerfile: Dockerfile
+    container_name: webapp-backend
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      WEBAPP_DB_HOST: webapp-database
+      WEBAPP_DB_PORT: ${MYSQL_PORT}
+      WEBAPP_DB_NAME: ${MYSQL_DATABASE}
+      WEBAPP_DB_USER: ${MYSQL_USER}
+      WEBAPP_DB_PASSWORD: ${MYSQL_PASSWORD}
+      WEBAPP_CLIENT_URL: ${WEBAPP_CLIENT_URL}
+    ports:
+      - "8080:80"
+    restart: unless-stopped
+    networks:
+      - webapp-network
+    command: ["./webapp-backend/wait-for-it.sh", "webapp-database:3306", "--", "dotnet", "webapp.dll"]
+    depends_on:
+      - webapp-database
+
+  webapp-frontend:
+    build:
+      context: ./webapp-frontend
+      dockerfile: Dockerfile
+    container_name: webapp-frontend
+    ports:
+      - "82:80"
+    restart: unless-stopped
+    networks:
+      - webapp-network
+    volumes:
+      - ./webapp-frontend/env.js:/usr/share/nginx/html/assets/env.js
+    depends_on:
+      - webapp-backend
+
+volumes:
+  mysql-data:
+
+networks:
+  webapp-network:
+    driver: bridge
