@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+{{- with .Values.database }}
+metadata:
+  name: {{ .hostName }}
+  namespace: {{ $.Values.commonConfig.namespace }}
+  labels:
+    app: {{ .hostName }}
+spec:
+  replicas: {{ .replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .hostName }}
+  template:
+    metadata:
+      labels:
+        app: {{ .hostName }}
+    spec:
+        containers:
+          - name: {{ .hostName }}
+            image: "{{ .image.repository }}:{{ .image.tag }}"
+            imagePullPolicy: {{ .image.pullPolicy }}
+            ports:
+              - name: "http-port"
+                containerPort: {{ .service.containerPort }}
+                protocol: {{ .service.protocol }}
+            env:
+            {{- range $key, $value := .environmentVariables }}
+              - name: {{ $key }}
+                value: "{{ $value }}"
+            {{- end }}
+
+            {{- with .resources }}
+            resources:
+              {{- toYaml . | nindent 14 }}
+            {{- end }}
+            volumeMounts:
+              - name: mysql-persistent-storage
+                mountPath: {{ .persistence.mountPath }}
+              - name: initdb
+                mountPath: {{ .persistence.initDbMountPath }}
+                subPath: {{ .persistence.initDbSubPath }}
+        volumes:
+            - name: mysql-persistent-storage
+              persistentVolumeClaim:
+                claimName: "{{ .hostName }}-pvc"
+            - name: initdb
+              configMap:
+                name: "{{ .hostName }}-dbinit-configmap"
+{{- end }}
+      

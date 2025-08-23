@@ -1,0 +1,16 @@
+{{- with .Values.database.persistence }}
+{{- if .enabled }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: "{{ $.Values.database.hostName }}-pvc"
+  namespace: {{ $.Values.commonConfig.namespace }}
+spec: 
+  accessModes:
+    - {{ .accessMode }}
+  resources:
+    requests:
+      storage: {{ .size }}
+  storageClassName: {{ .storageClass }}
+{{- end }}
+{{- end }}

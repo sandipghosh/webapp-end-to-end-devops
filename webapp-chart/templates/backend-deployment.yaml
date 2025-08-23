@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+{{- with .Values.backend }}
+metadata:
+  name: {{ .hostName }}
+  namespace: {{ $.Values.commonConfig.namespace }}
+  labels:
+    app: {{ .hostName }}
+spec:
+  replicas: {{ .replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .hostName }}
+  template:
+    metadata:
+      labels:
+        app: {{ .hostName }}
+    spec:
+      containers:
+        - name: {{ .hostName }}
+          image: "{{ .image.repository }}:{{ .image.tag }}"
+          imagePullPolicy: {{ .image.pullPolicy }}
+          command: {{ toJson .command }}
+          args:
+            - {{ tpl .args $ }}
+          ports:
+            - name: "tcp-port"
+              containerPort: {{ .service.containerPort }}
+              protocol: {{ .service.protocol }}
+          env:
+          {{- range $key, $value := .environmentVariables }}
+            - name: {{ $key }}
+              value: {{ tpl (quote $value) $ }}
+          {{- end }}
+              
+          {{- if .applyLivenessProbe }}
+          {{- with $.Values.commonConfig.livenessProbe }}
+          livenessProbe:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- end }}
+          
+          {{- if .applyReadinessProbe }}
+          {{- with $.Values.commonConfig.readinessProbe }}
+          readinessProbe:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- end }}
+
+          {{- with .resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+{{- end }}
+      

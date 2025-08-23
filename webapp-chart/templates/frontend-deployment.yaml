@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+{{- with .Values.frontend }}
+metadata:
+  name: {{ .hostName }}
+  namespace: {{ $.Values.commonConfig.namespace }}
+  labels:
+    app: {{ .hostName }}
+spec:
+  replicas: {{ .replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .hostName }}
+  template:
+    metadata:
+      labels:
+        app: {{ .hostName }}
+    spec:
+      containers:
+        - name: {{ .hostName }}
+          image: "{{ .image.repository }}:{{ .image.tag }}"
+          imagePullPolicy: {{ .image.pullPolicy }}
+          ports:
+            - name: "http-port"
+              containerPort: {{ .service.containerPort }}
+              protocol: {{ .service.protocol }}
+              
+          {{- if .applyLivenessProbe }}
+          {{- with $.Values.commonConfig.livenessProbe }}
+          livenessProbe:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- end }}
+          
+          {{- if .applyReadinessProbe }}
+          {{- with $.Values.commonConfig.readinessProbe }}
+          readinessProbe:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- end }}
+
+          {{- with .resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          volumeMounts:
+            - name: "fontend-volume-map"
+              mountPath: {{ .persistence.mountPath }}
+              subPath: {{ .persistence.subPath }}
+      volumes:
+        - name: "fontend-volume-map"
+          configMap: 
+            name: "{{ .hostName }}-env-configmap"
+
+{{- end }}
+      

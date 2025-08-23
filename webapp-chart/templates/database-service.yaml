@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+{{- with .Values.database }}
+metadata:
+  name: "{{ .hostName }}-service"
+  namespace: {{ $.Values.commonConfig.namespace }}
+spec:
+  type: {{ .service.type }}
+  selector:
+    app: {{ .hostName }}
+  ports:
+    - port: {{ .service.exposePort }}
+      targetPort: {{ .service.containerPort }}
+      protocol: {{ .service.protocol }}
+      name: "tcp-port"
+{{- end }}

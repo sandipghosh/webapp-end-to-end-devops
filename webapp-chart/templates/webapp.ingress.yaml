@@ -1,0 +1,30 @@
+{{- if .Values.ingress.enabled }}
+{{- $ingress := .Values.ingress }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ $ingress.name }}
+  namespace: {{ .Values.commonConfig.namespace }}
+  #annotations:
+    # Ingress Controller to rewrite the URL path of a request before forwarding it to the backend service.
+    #nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  # In a Kubernetes cluster, multiple Ingress controllers can be installed 
+  # (e.g., NGINX, Traefik, Istio). Each controller needs a way to know 
+  # which Ingress objects it should manage.
+  ingressClassName: nginx
+  {{- $allServices := concat .Values.ingress.backend .Values.ingress.frontend }}
+  rules:
+    - host: {{ $ingress.host }}
+      http:
+        paths:
+        {{- range $service := $allServices }}
+          - path: {{ $service.hostPath }}
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ tpl $service.hostService $ }}
+                port:
+                  number: {{ tpl $service.hostPort $ }}
+        {{- end }}
+{{- end }}

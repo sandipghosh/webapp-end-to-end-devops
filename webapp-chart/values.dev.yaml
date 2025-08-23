@@ -1,0 +1,140 @@
+commonConfig:
+  namespace: webapp
+  livenessProbe:
+    httpGet:
+      path: /
+      port: http
+  readinessProbe:
+    httpGet:
+      path: /
+      port: http
+
+database:
+  replicaCount: 1
+  hostName: webapp-database
+  image: 
+    repository: sandipdockerrepo/webapp-database
+    pullPolicy: IfNotPresent
+    tag: "latest"
+  service: 
+    type: ClusterIP
+    containerPort: 3306
+    exposePort: 3306
+    protocol: TCP
+  environmentVariables:
+    MYSQL_DATABASE: app_db
+    MYSQL_USER: sandip
+    MYSQL_PASSWORD: sandev@1984
+    MYSQL_ROOT_PASSWORD: root
+  persistence:
+    enabled: true
+    accessMode: ReadWriteOnce
+    storageClass: standard
+    mountPath: "/var/lib/mysql"
+    initDbMountPath: "/docker-entrypoint-initdb.d/init.sql"
+    initDbSubPath: "init.sql"
+    size: 1Gi
+  resources:
+    requests:
+      cpu: "500m"
+      memory: "512Mi"
+    limits:
+      cpu: "1"
+      memory: "1Gi"
+
+backend:
+  replicaCount: 1
+  hostName: webapp-backend
+  image: 
+    repository: sandipdockerrepo/webapp-backend
+    pullPolicy: IfNotPresent
+    tag: "latest"
+  service: 
+    type: ClusterIP
+    containerPort: 80
+    exposePort: 8080
+    protocol: TCP
+  environmentVariables:
+    ASPNETCORE_ENVIRONMENT: Development
+    WEBAPP_DB_HOST: "{{ .Values.database.hostName }}-service"
+    WEBAPP_DB_PORT: 3306
+    WEBAPP_DB_NAME: app_db
+    WEBAPP_DB_USER: sandip
+    WEBAPP_DB_PASSWORD: sandev@1984
+    WEBAPP_CLIENT_URL: "http://{{ .Values.ingress.host }}:{{ .Values.ingress.exposedPort }}{{ (index .Values.ingress.frontend 0).hostPath}}"
+    #WEBAPP_CLIENT_URL: "http://{{ .Values.frontend.hostName }}:{{ .Values.frontend.service.exposePort }}{{.Values.frontend.service.exposePath}}"
+  command:
+    - /bin/sh
+    - -c
+  args: 
+    chmod +x /wait-for-it.sh && /wait-for-it.sh -t 30 {{ .Values.database.hostName }}-service:{{ .Values.database.service.exposePort }} -- dotnet webapp.dll
+  applyLivenessProbe: false
+  applyReadinessProbe: false
+  resources:
+    requests:
+      cpu: "200m"
+      memory: "256Mi"
+    limits:
+      cpu: "1"
+      memory: "1Gi"
+
+frontend:
+  replicaCount: 1
+  hostName: webapp-frontend
+  image: 
+    repository: sandipdockerrepo/webapp-frontend
+    pullPolicy: IfNotPresent
+    tag: "latest"
+  service: 
+    type: ClusterIP
+    containerPort: 80
+    exposePort: 82
+    protocol: TCP
+  persistence:
+    enabled: true
+    mountPath: "/usr/share/nginx/html/assets/env.js"
+    # the subPath field in a volume mount allows you to mount a specific file or 
+    # sub-directory from a volume into a container, instead of mounting the entire volume path.
+    subPath: "env.js"
+  envJsContent: |
+    (function(window) {
+        window.__env = window.__env || {};
+
+        // Default values 
+        window.__env.apiUrl = 'http://{{ .Values.ingress.host }}:{{ .Values.ingress.exposedPort }}{{ (index .Values.ingress.backend 0).hostPath}}'; 
+        window.__env.debug = false;
+    })(this);
+  applyLivenessProbe: false
+  applyReadinessProbe: false
+  resources:
+    requests:
+      cpu: "100m"
+      memory: "128Mi"
+    limits:
+      cpu: "500m"
+      memory: "256Mi"
+
+ingress:
+  enabled: true
+  name: webapp-ingress
+  host: webapp.local
+  exposedPort: 8080
+  backend:
+    - hostPath: "/api"
+      hostPort: "{{ .Values.backend.service.exposePort }}"
+      hostService: "{{ .Values.backend.hostName }}-service"
+    - hostPath: "/swagger"
+      hostPort: "{{ .Values.backend.service.exposePort }}"
+      hostService: "{{ .Values.backend.hostName }}-service"
+  frontend:
+    - hostPath: "/"
+      hostPort: "{{ .Values.frontend.service.exposePort }}"
+      hostService: "{{ .Values.frontend.hostName }}-service"
+
+hpa:
+  enabled: true
+  backend:
+    minReplicas: 1
+    maxReplicas: 10
+    targetCPU: 30
+    targetMemory: 30

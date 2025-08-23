@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "{{ .Values.frontend.hostName }}-env-configmap"
+  namespace: {{ .Values.commonConfig.namespace }}
+data:
+  env.js: |
+{{ tpl .Values.frontend.envJsContent . | indent 4 }}
+# In the following statement "tpl" will render the 
+# template inside the envJsContent string using the current context (.).
+
