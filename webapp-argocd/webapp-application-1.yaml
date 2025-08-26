@@ -1,0 +1,17 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: demo-application-1
+  # namespace must be "argocd" to be executed by argocd
+  namespace: argocd
+spec:
+  project: default
+  source:
+    helm:
+      releaseName: web-application
+    repoURL: https://github.com/sandipghosh/webapp-end-to-end-devops.git
+    targetRevision: main
+    path: webapp-chart
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: webapp
