@@ -1,0 +1,5 @@
+backend:
+  replicaCount: 3
+  
+hpa:
+  enabled: false
