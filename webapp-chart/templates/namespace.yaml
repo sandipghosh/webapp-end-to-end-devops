@@ -1,4 +1,6 @@
+{{- if not .Release.Namespace }}
 apiVersion: v1
 kind: Namespace
 metadata: 
     name: {{ .Values.commonConfig.namespace }}
+{{- end }}

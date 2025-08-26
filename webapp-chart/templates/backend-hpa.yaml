@@ -3,7 +3,11 @@ apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
   name: "{{ .Values.backend.hostName }}-hpa"
-  namespace: {{ $.Values.commonConfig.namespace }}
+  {{- if .Release.Namespace }}
+  namespace: {{ .Release.Namespace }}
+  {{- else }}
+  namespace: {{ .Values.commonConfig.namespace }}
+  {{- end }}
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
@@ -18,12 +22,12 @@ spec:
         name: cpu
         target:
           type: Utilization
-          averageUtilization: {{ .targetCPU }}
+          averageUtilization: {{ .targetCPUUtilization }}
     - type: Resource
       resource:
         name: memory
         target:
           type: Utilization
-          averageUtilization: {{ .targetMemory }}
+          averageUtilization: {{ .targetMemoryUtilization }}
   {{- end }}
 {{- end }}

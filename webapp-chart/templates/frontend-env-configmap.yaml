@@ -2,7 +2,11 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: "{{ .Values.frontend.hostName }}-env-configmap"
-  namespace: {{ .Values.commonConfig.namespace }}
+  {{- if .Release.Namespace }}
+  namespace: {{ .Release.Namespace }}
+  {{- else }}
+  namespace: {{ $.Values.commonConfig.namespace }}
+  {{- end }}
 data:
   env.js: |
 {{ tpl .Values.frontend.envJsContent . | indent 4 }}

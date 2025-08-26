@@ -3,7 +3,11 @@ kind: Deployment
 {{- with .Values.frontend }}
 metadata:
   name: {{ .hostName }}
+  {{- if $.Release.Namespace }}
+  namespace: {{ $.Release.Namespace }}
+  {{- else }}
   namespace: {{ $.Values.commonConfig.namespace }}
+  {{- end }}
   labels:
     app: {{ .hostName }}
 spec:

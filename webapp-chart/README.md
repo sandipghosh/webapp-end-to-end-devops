@@ -14,6 +14,10 @@
 ```sudo kubectl port-forward --namespace webapp service/webapp-backend-service 8085:8080```
 
 ## Rendering all the template of the entire helm chart (Used for debug purposes)
+```helm template <release-name> <chart-root-directory> -f <full path of values file> --namespace <namespace-name> --create-namespace```
+
+```helm install <release-name> <chart-root-directory> -f <full path of values file> --namespace <namespace-name> --create-namespace```
+
 ```helm template webapp-chart ./webapp-chart -f ./webapp-chart/values.dev.yaml --dry-run --debug```
 
 ```helm install webapp-chart ./webapp-chart -f ./webapp-chart/values.dev.yaml --dry-run --debug```
@@ -22,10 +26,10 @@
 ```helm template webapp-chart ./webapp-chart -f ./webapp-chart/values.dev.yaml --debug > rendered-output.yaml```
 
 ## Installing the helm chart 
-```helm install webapp-chart ./webapp-chart -f ./webapp-chart/values.dev.yaml```
+```helm install webapp-chart ./webapp-chart -f ./webapp-chart/values.dev.yaml -n webapp --create-namespace```
 
 ## Installing the helm chart with updraded configureation
-```helm upgrade --install webapp-chart ./webapp-chart -f ./webapp-chart/values.dev.yaml```
+```helm upgrade --install webapp-chart ./webapp-chart -f ./webapp-chart/values.dev.yaml -n webapp```
 
 
 ## Spinup testing pod

@@ -118,7 +118,7 @@ ingress:
   enabled: true
   name: webapp-ingress
   host: webapp.local
-  exposedPort: 8080
+  exposedPort: 8585
   backend:
     - hostPath: "/api"
       hostPort: "{{ .Values.backend.service.exposePort }}"
@@ -136,5 +136,5 @@ hpa:
   backend:
     minReplicas: 1
     maxReplicas: 10
-    targetCPU: 30
-    targetMemory: 30
+    targetCPUUtilization: 30
+    targetMemoryUtilization: 30

@@ -4,7 +4,11 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: {{ $ingress.name }}
+  {{- if .Release.Namespace }}
+  namespace: {{ .Release.Namespace }}
+  {{- else }}
   namespace: {{ .Values.commonConfig.namespace }}
+  {{- end }}
   #annotations:
     # Ingress Controller to rewrite the URL path of a request before forwarding it to the backend service.
     #nginx.ingress.kubernetes.io/rewrite-target: /
