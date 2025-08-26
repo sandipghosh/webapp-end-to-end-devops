@@ -134,7 +134,7 @@ ingress:
 hpa:
   enabled: true
   backend:
-    minReplicas: 3
+    minReplicas: 1
     maxReplicas: 10
     targetCPUUtilization: 30
     targetMemoryUtilization: 30
