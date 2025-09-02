@@ -22,13 +22,15 @@ jobs:
 
       - name: Find and scan all the projects
         run: |
-          for proj in $(find ./webapp -name "*.csproj")
+          for proj in $(find ./webapp -name "*.csproj"); do
             echo "Scanning project $proj"
 
             # Restore dependencies
+            echo "Restore dependencies for $proj"
             dotnet restore $proj
 
             # Build the project
+            echo "Build the project $proj"
             dotnet build --configuration Release --no-restore $proj
 
             # Run test project
@@ -38,9 +40,11 @@ jobs:
             fi
 
             # Check for vulnerable packages
+            echo "Check for vulnerable packages for $proj"
             dotnet list $proj package --vulnerable
 
-            # Check the coding formatting
+            # Check the code formatting
+            echo "Check the code formatting for $proj"
             dotnet format --verify-no-changes $proj
           done
 
