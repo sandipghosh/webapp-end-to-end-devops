@@ -12,8 +12,11 @@ jobs:
     name: .NET Scan
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
+      - name: Checkout latest code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0       # full history
+          ref: ${{ github.ref }}   # ensure correct branch/PR ref
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
