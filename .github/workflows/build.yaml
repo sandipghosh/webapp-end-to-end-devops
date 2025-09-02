@@ -1,0 +1,120 @@
+name: Scan Applications
+
+on:
+  #ush:
+    #branches: [ "main" ]
+  #pull_request:
+    #branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  dotnet-scan:
+    name: .NET Scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x' # adjust if needed
+
+      - name: Find and scan all the projects
+        run: |
+          for proj in $(find ./webapp -name "*.csproj")
+            echo "Scanning project $proj"
+
+            # Restore dependencies
+            dotnet restore $proj
+
+            # Build the project
+            dotnet build --configuration Release --no-restore $proj
+
+            # Run test project
+            if [[ $proj = *".test"*]]
+              echo "Running test project $proj"
+              dotnet test --no-build --verbosity normal $proj 
+            fi
+
+            # Check for vulnerable packages
+            dotnet list $proj package --vulnerable
+
+            # Check the coding formatting
+            dotnet format --verify-no-changes $proj
+          done
+
+  angular-scan:
+    name: Angular Scan
+    runs-on: ubuntu-latest
+    env:
+      FRONTEND_PATH: "./webapp/webapp-frontend"
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24.7.0'
+
+      - name: Install dependencies
+        run: |
+          cd $FRONTEND_PATH
+          npm ci
+
+      - name: Build
+        run: |
+          cd $FRONTEND_PATH
+          npm run build --if-present
+
+      - name: Run tests
+        run: |
+          cd $FRONTEND_PATH
+          npm test -- --watch=false --browsers=ChromeHeadless
+
+      - name: Security audit
+        run: |
+          cd $FRONTEND_PATH
+          npm audit --audit-level=high
+
+  sonarqube-dotnet:
+    name: .Net Sonerqube Scanning
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'   # adjust if needed
+
+      - name: Install SonarScanner for .NET
+        run: dotnet tool install --global dotnet-sonarscanner
+
+      - name: Add dotnet tools to PATH
+        run: echo "$HOME/.dotnet/tools" >> $GITHUB_PATH
+
+      - name: SonarQube begin analysis
+        run: |
+          dotnet sonarscanner begin \
+            /k:"sandipghosh_webapp-end-to-end-devops_49b3ad43-874c-4545-92e0-a632b694b804" \
+            /d:sonar.host.url="${{ secrets.SONAR_HOST_URL }}" \
+            /d:sonar.token="${{ secrets.SONAR_TOKEN }}" \
+            /d:sonar.cs.opencover.reportsPaths="**/coverage.opencover.xml"
+
+      - name: Build solution
+        run: dotnet build --configuration Release
+
+      #- name: Run tests with coverage
+      #  run: dotnet test --configuration Release \
+      #       --collect:"XPlat Code Coverage" \
+      #       --results-directory ./TestResults \
+      #       /p:CollectCoverage=true \
+      #       /p:CoverletOutputFormat=opencover
+
+      - name: SonarQube end analysis
+        run: |
+          dotnet sonarscanner end \
+            /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
