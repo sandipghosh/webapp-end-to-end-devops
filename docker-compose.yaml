@@ -12,7 +12,7 @@ services:
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
     ports:
-      - "3306:3306"
+      - "${MYSQL_HOST_PORT}:${MYSQL_EXPOSED_PORT}"
     volumes:
       - mysql-data:/var/lib/mysql
       - ./webapp-database/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
@@ -27,17 +27,18 @@ services:
     environment:
       ASPNETCORE_ENVIRONMENT: Development
       WEBAPP_DB_HOST: webapp-database
-      WEBAPP_DB_PORT: ${MYSQL_PORT}
+      WEBAPP_DB_PORT: ${MYSQL_HOST_PORT}
       WEBAPP_DB_NAME: ${MYSQL_DATABASE}
       WEBAPP_DB_USER: ${MYSQL_USER}
       WEBAPP_DB_PASSWORD: ${MYSQL_PASSWORD}
       WEBAPP_CLIENT_URL: ${WEBAPP_CLIENT_URL}
+      WEBAPP_EXPOSSED_PORT: ${WEBAPP_EXPOSSED_PORT}
     ports:
-      - "8080:80"
+      - "${WEBAPP_HOST_PORT}:${WEBAPP_EXPOSSED_PORT}"
     restart: unless-stopped
     networks:
       - webapp-network
-    command: ["./webapp-backend/wait-for-it.sh", "webapp-database:3306", "--", "dotnet", "webapp.dll"]
+    command: ["./webapp-backend/wait-for-it.sh", "webapp-database:${MYSQL_HOST_PORT}", "--", "dotnet", "webapp.dll"]
     depends_on:
       - webapp-database
 
@@ -47,7 +48,7 @@ services:
       dockerfile: Dockerfile
     container_name: webapp-frontend
     ports:
-      - "82:80"
+      - "${FRONEND_HOST_PORT}:${FRONEND_EXPOSSED_PORT}"
     restart: unless-stopped
     networks:
       - webapp-network

@@ -7,9 +7,9 @@ namespace webapp.Endpoints.Tasks;
 
 public class CreateTaskEndpoint : Endpoint<CreateTaskRequest, TaskItem>
 {
-    private readonly TaskService _service;
+    private readonly ITaskService _service;
 
-    public CreateTaskEndpoint(TaskService service) => _service = service;
+    public CreateTaskEndpoint(ITaskService service) => _service = service;
 
     public override void Configure()
     {

@@ -5,9 +5,9 @@ namespace webapp.Endpoints.Tasks;
 
 public class DeleteTaskEndpoint : EndpointWithoutRequest
 {
-    private readonly TaskService _service;
+    private readonly ITaskService _service;
 
-    public DeleteTaskEndpoint(TaskService service) => _service = service;
+    public DeleteTaskEndpoint(ITaskService service) => _service = service;
 
     public override void Configure()
     {

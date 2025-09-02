@@ -1,19 +1,19 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: demo-application-1
+  name: demo-application-2
   # namespace must be "argocd" to be executed by argocd
   namespace: argocd
 spec:
   project: default
   source:
+    chart: webapp-chart
+    repoURL: https://sandipghosh.github.io/demo-charts
+    targetRevision: 0.1.0
     helm:
-      releaseName: web-application
+      releaseName: webapp-chart
       valueFiles:
         - custom-values.yaml
-    repoURL: https://github.com/sandipghosh/webapp-end-to-end-devops.git
-    targetRevision: main
-    path: webapp-chart
   destination:
     server: https://kubernetes.default.svc
-    namespace: helm-local
+    namespace: helm-repo

@@ -5,17 +5,14 @@ using dataaccess.UnitOfWork;
 
 namespace webapp.Services;
 
-public class TaskService
+public class TaskService: ITaskService
 {
     private readonly IUnitOfWork _uow;
     public TaskService(IUnitOfWork uow) => _uow = uow;
 
-    //private readonly List<TaskItem> _tasks = new();
-
     public async Task<IEnumerable<TaskItem>> GetAll() => await _uow.TaskItems.GetAllAsync();
 
     public async Task<TaskItem?> Get(Guid id) => await _uow.TaskItems.GetByIdAsync(id);
-    //_tasks.FirstOrDefault(t => t.Id == id);
 
     public async Task<TaskItem> CreateAsync(CreateTaskRequest req, CancellationToken ct)
     {

@@ -19,7 +19,7 @@ type Mode = 'create' | 'edit';
   templateUrl: './task-form.html',
   styleUrls: ['./task-form.scss'],
   imports: [
-    MatDialogContent, 
+    MatDialogContent,
     MatCheckbox,
     CommonModule,
     ReactiveFormsModule,

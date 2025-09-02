@@ -1,14 +1,15 @@
 using FastEndpoints;
+using model;
 using webapp.Models;
 using webapp.Services;
 
 namespace webapp.Endpoints.Tasks;
 
-public class UpdateTaskEndpoint : Endpoint<UpdateTaskRequest, EmptyResponse>
+public class UpdateTaskEndpoint : Endpoint<UpdateTaskRequest, TaskItem>
 {
-    private readonly TaskService _service;
+    private readonly ITaskService _service;
 
-    public UpdateTaskEndpoint(TaskService service) => _service = service;
+    public UpdateTaskEndpoint(ITaskService service) => _service = service;
 
     public override void Configure()
     {
@@ -25,6 +26,7 @@ public class UpdateTaskEndpoint : Endpoint<UpdateTaskRequest, EmptyResponse>
         if (!success)
             await Send.NotFoundAsync(ct);
 
-        await Send.NoContentAsync(ct);
+        var refreshed = await _service.Get(id);
+        await Send.OkAsync(refreshed, ct);
     }
 }

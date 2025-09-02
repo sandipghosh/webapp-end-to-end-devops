@@ -7,9 +7,9 @@ namespace webapp.Endpoints.Tasks;
 
 public class GetAllTasksEndpoint : EndpointWithoutRequest<IEnumerable<TaskItem>>
 {
-    private readonly TaskService _service;
+    private readonly ITaskService _service;
 
-    public GetAllTasksEndpoint(TaskService service) => _service = service;
+    public GetAllTasksEndpoint(ITaskService service) => _service = service;
 
     public override void Configure()
     {

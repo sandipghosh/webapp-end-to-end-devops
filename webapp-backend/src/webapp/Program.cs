@@ -57,7 +57,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 // Unit of Work
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-builder.Services.AddScoped<TaskService>();
+builder.Services.AddScoped<ITaskService, TaskService>();
 
 var app = builder.Build();
 
@@ -66,3 +66,6 @@ app.UseFastEndpoints();
 app.UseSwaggerGen(); // Swagger UI at /swagger
 
 app.Run();
+
+// 👇 Required for integration tests
+public partial class Program { }

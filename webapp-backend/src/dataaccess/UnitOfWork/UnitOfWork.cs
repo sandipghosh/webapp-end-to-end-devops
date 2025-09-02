@@ -3,7 +3,7 @@ using model;
 
 namespace dataaccess.UnitOfWork;
 
-public class UnitOfWork : IUnitOfWork,  IDisposable, IAsyncDisposable
+public class UnitOfWork : IUnitOfWork
 {
     private readonly ApplicationDbContext _context;
 

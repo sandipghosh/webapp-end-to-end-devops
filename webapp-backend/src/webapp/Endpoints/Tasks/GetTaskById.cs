@@ -5,9 +5,9 @@ using webapp.Services;
 namespace webapp.Endpoints.Tasks;
 public class GetTaskByIdEndpoint : Endpoint<GetTaskByIdRequest, TaskItem>
 {
-    private readonly TaskService _service;
+    private readonly ITaskService _service;
 
-    public GetTaskByIdEndpoint(TaskService service) => _service = service;
+    public GetTaskByIdEndpoint(ITaskService service) => _service = service;
 
     public override void Configure()
     {
