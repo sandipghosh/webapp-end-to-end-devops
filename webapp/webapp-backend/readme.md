@@ -22,23 +22,34 @@ dotnet ef database update --project src/dataaccess/dataaccess.csproj --context A
 ## Executing stand alone docker run with environment variable
 
 ```bash 
-docker run -d -p 8080:80 \
+docker run \
+    -d -p 8080:80 \
     --name webapp-backend \
-    --network test-network \
     -e WEBAPP_DB_HOST=webapp-database \
     -e WEBAPP_DB_PORT=3306 \
     -e WEBAPP_DB_NAME=user_name \
     -e WEBAPP_DB_USER=database_name \
     -e WEBAPP_DB_PASSWORD=database_password \
     -e WEBAPP_CLIENT_URL="http://webapp-frontend:82,http://localhost:82,http://localhost:4200" \
-    -e EXPOSSED_PORT=80
+    -e EXPOSED_PORT=80
     webapp-backend
 ```
 
 ## Executing stand alone docker run with input arguments
 
 ```bash
-docker run --env-file secret.env --name webapp-backend -d -p 8080:80 webapp-backend:latest
+# Building the docker image
+docker build \
+    --no-cache \
+    --name webapp-backend \
+    -t webapp-backend:latest .
+
+# Spinning up the docker container
+docker run \
+    --env-file secret.env \
+    --name webapp-backend \
+    --network app-network \
+    -d -p 8080:80 webapp-backend:latest
 ```
 
 

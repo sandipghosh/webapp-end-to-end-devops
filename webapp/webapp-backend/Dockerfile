@@ -31,7 +31,7 @@ RUN dotnet test test/database.test/database.test.csproj --no-restore --no-build 
 RUN dotnet test test/webapp.test/webapp.test.csproj --no-restore --no-build --verbosity normal
 
 # ==============================================
-# Stage 2: Publishing the tested code
+# Stage 3: Publishing the tested code
 # ==============================================
 FROM test AS publish
 WORKDIR /app
@@ -40,9 +40,9 @@ WORKDIR /app
 WORKDIR /app/src/webapp
 RUN dotnet publish webapp.csproj -c Release -o /app/publish
 
-# ============================
-# Stage 2: Serve with dotnet runtime
-# ============================
+# ==============================================
+# Stage 4: Deploy the application and serve with dotnet runtime
+# ==============================================
 FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS final
 WORKDIR /app
 
@@ -65,10 +65,10 @@ ENV WEBAPP_DB_NAME=${DB_NAME}
 ENV WEBAPP_DB_USER=${DB_USER}
 ENV WEBAPP_DB_PASSWORD=${DB_PASSWORD}
 ENV WEBAPP_CLIENT_URL=${CLIENT_URL}
-ENV WEBAPP_EXPOSSED_PORT=${EXTERNAL_PORT}
+ENV WEBAPP_EXPOSED_PORT=${EXTERNAL_PORT}
 
 # Expose the port used by the webapp
-EXPOSE ${WEBAPP_EXPOSSED_PORT}
+EXPOSE ${WEBAPP_EXPOSED_PORT}
 ENV ASPNETCORE_URLS="http://+:${WEBAPP_EXPOSSED_PORT}"
 
 # Copy wait-for-it script
@@ -77,6 +77,5 @@ RUN chmod +x /wait-for-it.sh
 
 # Start the application
 #ENTRYPOINT ["dotnet", "webapp.dll"]
-#ENTRYPOINT ["/wait-for-it.sh", "${WEBAPP_DB_HOST}:${WEBAPP_DB_PORT}", "--", "dotnet", "webapp.dll"]
 ENTRYPOINT ["/bin/sh", "-c", "/wait-for-it.sh ${WEBAPP_DB_HOST}:${WEBAPP_DB_PORT} -- dotnet webapp.dll"]
 
