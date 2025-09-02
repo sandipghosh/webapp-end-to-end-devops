@@ -25,7 +25,31 @@ jobs:
 
       - name: Find and scan all the projects
         run: |
-          echo "testing"
+          for proj in $(find ./webapp -name "*.csproj"); do
+            echo "Scanning project $proj"
+
+            # Restore dependencies
+            echo "Restore dependencies for $proj"
+            dotnet restore "$proj"
+
+            # Build the project
+            echo "Build the project $proj"
+            dotnet build --configuration Release --no-restore "$proj"
+
+            # Run test project
+            if [[ $proj == *".test"* ]]; then
+              echo "Running test project $proj"
+              dotnet test --no-build --verbosity normal "$proj"
+            fi
+
+            # Check for vulnerable packages
+            echo "Check for vulnerable packages for $proj"
+            dotnet list "$proj" package --vulnerable
+
+            # Check the code formatting
+            echo "Check the code formatting for $proj"
+            dotnet format --verify-no-changes "$proj"
+          done
 
   angular-scan:
     name: Angular Scan
