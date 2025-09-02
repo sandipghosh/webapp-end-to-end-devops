@@ -30,11 +30,11 @@ jobs:
 
             # Restore dependencies
             echo "Restore dependencies for $proj"
-            dotnet restore $proj
+            dotnet restore "$proj"
 
             # Build the project
             echo "Build the project $proj"
-            dotnet build --configuration Release --no-restore $proj
+            dotnet build --configuration Release --no-restore "$proj"
 
             # Run test project
             if [[ $proj == *".test"* ]]; then
@@ -44,11 +44,11 @@ jobs:
 
             # Check for vulnerable packages
             echo "Check for vulnerable packages for $proj"
-            dotnet list $proj package --vulnerable
+            dotnet list "$proj" package --vulnerable
 
             # Check the code formatting
             echo "Check the code formatting for $proj"
-            dotnet format --verify-no-changes $proj
+            dotnet format --verify-no-changes "$proj"
           done
 
   angular-scan:
