@@ -94,8 +94,8 @@ jobs:
           npm audit --audit-level=high
 
   dotnet-sonerqube-scan:
-    name: .Net Application Sonerqube Scanning
-    runs-on: [self-hosted,k8s,sonerqube]
+    name: .Net Application Sonarqube Scanning
+    runs-on: [self-hosted,k8s,sonarqube]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
