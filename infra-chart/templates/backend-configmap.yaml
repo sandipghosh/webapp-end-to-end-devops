@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "{{ .Values.backend.hostName }}-configmap"
+  {{- if .Release.Namespace }}
+  namespace: {{ .Release.Namespace }}
+  {{- else }}
+  namespace: {{ $.Values.commonConfig.namespace }}
+  {{- end }}
+data:
+  {{- range $key, $value := .Values.backend.environmentVariables }}
+  {{- if not (contains "PASSWORD" $key) }}
+  {{ $key }}: {{ tpl (quote $value) $  }}
+  {{- end }}
+  {{- end }}

@@ -31,24 +31,26 @@ spec:
             - name: "tcp-port"
               containerPort: {{ .service.containerPort }}
               protocol: {{ .service.protocol }}
-          env:
-          {{- range $key, $value := .environmentVariables }}
-            - name: {{ $key }}
-              value: {{ tpl (quote $value) $ }}
-          {{- end }}
+
+          envFrom:
+            - configMapRef:
+                name: "{{ $.Values.backend.hostName }}-configmap"
+            - secretRef:
+                name: "{{ $.Values.backend.hostName }}-secret"
               
-          {{- if .applyLivenessProbe }}
-          {{- with $.Values.commonConfig.livenessProbe }}
-          livenessProbe:
-            {{- toYaml . | nindent 12 }}
-          {{- end }}
+          {{- if .startupProbe.enabled }}
+          startupProbe:
+            {{- tpl (toYaml .startupProbe.config) $ | nindent 12 }}
           {{- end }}
           
-          {{- if .applyReadinessProbe }}
-          {{- with $.Values.commonConfig.readinessProbe }}
+          {{- if .readinessProbe.enabled }}
           readinessProbe:
-            {{- toYaml . | nindent 12 }}
+            {{- tpl (toYaml .readinessProbe.config) $ | nindent 12 }}
           {{- end }}
+
+          {{- if .livenessProbe.enabled }}
+          livenessProbe:
+            {{- tpl (toYaml .livenessProbe.config) $ | nindent 12 }}
           {{- end }}
 
           {{- with .resources }}

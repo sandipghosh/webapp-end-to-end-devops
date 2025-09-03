@@ -41,12 +41,11 @@ docker run \
 # Building the docker image
 docker build \
     --no-cache \
-    --name webapp-backend \
     -t webapp-backend:latest .
 
 # Spinning up the docker container
 docker run \
-    --env-file secret.env \
+    --env-file secrets.env \
     --name webapp-backend \
     --network app-network \
     -d -p 8080:80 webapp-backend:latest

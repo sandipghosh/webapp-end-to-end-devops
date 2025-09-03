@@ -177,6 +177,7 @@ tmpcharts/
 
 # Logs
 *.log
+.sonarqube
 
 # OS / Editor junk
 .DS_Store

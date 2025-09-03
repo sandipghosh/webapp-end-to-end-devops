@@ -69,13 +69,18 @@ ENV WEBAPP_EXPOSED_PORT=${EXTERNAL_PORT}
 
 # Expose the port used by the webapp
 EXPOSE ${WEBAPP_EXPOSED_PORT}
-ENV ASPNETCORE_URLS="http://+:${WEBAPP_EXPOSSED_PORT}"
+ENV ASPNETCORE_URLS="http://+:${WEBAPP_EXPOSED_PORT}"
 
 # Copy wait-for-it script
-COPY wait-for-it.sh /wait-for-it.sh
-RUN chmod +x /wait-for-it.sh
+#COPY wait-for-it.sh /wait-for-it.sh
+#RUN chmod +x /wait-for-it.sh
+
+# Install netcat (nc) for Kubernetes probes
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends netcat-openbsd && \
+    rm -rf /var/lib/apt/lists/*
 
 # Start the application
-#ENTRYPOINT ["dotnet", "webapp.dll"]
-ENTRYPOINT ["/bin/sh", "-c", "/wait-for-it.sh ${WEBAPP_DB_HOST}:${WEBAPP_DB_PORT} -- dotnet webapp.dll"]
+ENTRYPOINT ["dotnet", "webapp.dll"]
+#ENTRYPOINT ["/bin/sh", "-c", "/wait-for-it.sh ${WEBAPP_DB_HOST}:${WEBAPP_DB_PORT} -- dotnet webapp.dll"]
 

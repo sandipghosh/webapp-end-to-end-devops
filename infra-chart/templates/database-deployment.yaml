@@ -25,14 +25,15 @@ spec:
             image: "{{ .image.repository }}:{{ .image.tag }}"
             imagePullPolicy: {{ .image.pullPolicy }}
             ports:
-              - name: "http-port"
+              - name: "tcp-port"
                 containerPort: {{ .service.containerPort }}
                 protocol: {{ .service.protocol }}
-            env:
-            {{- range $key, $value := .environmentVariables }}
-              - name: {{ $key }}
-                value: "{{ $value }}"
-            {{- end }}
+
+            envFrom:
+              - configMapRef:
+                  name: "{{ $.Values.database.hostName }}-configmap"
+              - secretRef:
+                  name: "{{ $.Values.database.hostName }}-secret"
 
             {{- with .resources }}
             resources:
@@ -43,7 +44,7 @@ spec:
                 mountPath: {{ .persistence.mountPath }}
               - name: initdb
                 mountPath: {{ .persistence.initDbMountPath }}
-                subPath: {{ .persistence.initDbSubPath }}
+                #subPath: {{ .persistence.initDbSubPath }}
         volumes:
             - name: mysql-persistent-storage
               persistentVolumeClaim:

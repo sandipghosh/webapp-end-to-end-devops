@@ -31,7 +31,8 @@ database:
     accessMode: ReadWriteOnce
     storageClass: standard
     mountPath: "/var/lib/mysql"
-    initDbMountPath: "/docker-entrypoint-initdb.d/init.sql"
+    #initDbMountPath: "/docker-entrypoint-initdb.d/init.sql"
+    initDbMountPath: "/docker-entrypoint-initdb.d"
     initDbSubPath: "init.sql"
     size: 1Gi
   resources:
@@ -52,7 +53,7 @@ backend:
   service: 
     type: ClusterIP
     containerPort: 80
-    exposePort: 8080
+    exposePort: 8000
     protocol: TCP
   environmentVariables:
     ASPNETCORE_ENVIRONMENT: Development
@@ -67,9 +68,52 @@ backend:
     - /bin/sh
     - -c
   args: 
-    chmod +x /wait-for-it.sh && /wait-for-it.sh -t 30 {{ .Values.database.hostName }}-service:{{ .Values.database.service.exposePort }} -- dotnet webapp.dll
-  applyLivenessProbe: false
-  applyReadinessProbe: false
+    dotnet webapp.dll
+
+  # Runs first, ensures DB is reachable before marking the backend pod for readiness/liveness checks.
+  startupProbe:
+    enabled: true
+    config:
+      exec:
+        command:
+          - sh
+          - -c
+          - >
+            nc -z {{ .Values.database.hostName }}-service {{ .Values.database.service.exposePort }}
+      initialDelaySeconds: 10
+      periodSeconds: 10
+      failureThreshold: 30
+
+  # Keeps the pod out of Service endpoints until DB is accessible.
+  readinessProbe:
+    enabled: true
+    config:
+      exec:
+        command:
+          - sh
+          - -c
+          - >
+            nc -z {{ .Values.database.hostName }}-service {{ .Values.database.service.exposePort }}
+      initialDelaySeconds: 5
+      periodSeconds: 10
+      timeoutSeconds: 5
+      failureThreshold: 3
+
+  # Ensures pod is restarted if it loses DB connectivity later.
+  livenessProbe: 
+    enabled: true
+    config: 
+      exec:
+        command:
+          - sh
+          - -c
+          - >
+            nc -z {{ .Values.database.hostName }}-service {{ .Values.database.service.exposePort }}
+      initialDelaySeconds: 30
+      periodSeconds: 30
+      timeoutSeconds: 5
+      failureThreshold: 3
+
   resources:
     requests:
       cpu: "200m"
@@ -88,7 +132,7 @@ frontend:
   service: 
     type: ClusterIP
     containerPort: 80
-    exposePort: 82
+    exposePort: 80
     protocol: TCP
   persistence:
     enabled: true
