@@ -121,7 +121,7 @@ jobs:
             #/d:sonar.cs.opencover.reportsPaths="**/coverage.opencover.xml"
 
       - name: Build solution
-        run: dotnet build --configuration Release
+        run: dotnet build --configuration Release ./webapp/webapp-backend/webapp-backend.sln
 
       #- name: Run tests with coverage
       #  run: dotnet test --configuration Release \
