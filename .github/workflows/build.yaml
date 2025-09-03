@@ -1,4 +1,4 @@
-name: Scan Applications
+name: Application Scanning
 
 on:
   #ush:
@@ -8,8 +8,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  dotnet-scan:
-    name: .NET Scan
+  dotnet-basic-scan:
+    name: .NET Application Scanning
     runs-on: ubuntu-latest
     steps:
       - name: Checkout latest code
@@ -59,8 +59,8 @@ jobs:
             fi
           done
 
-  angular-scan:
-    name: Angular Scan
+  angular-basic-scan:
+    name: Angular Application Scanning
     runs-on: ubuntu-latest
     env:
       FRONTEND_PATH: "./webapp/webapp-frontend"
@@ -93,14 +93,14 @@ jobs:
           cd $FRONTEND_PATH
           npm audit --audit-level=high
 
-  sonarqube-dotnet:
-    name: .Net Sonerqube Scanning
-    runs-on: ubuntu-latest
+  dotnet-sonerqube-scan:
+    name: .Net Application Sonerqube Scanning
+    runs-on: [self-hosted, k8s, sonerqube]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup .NET
+      - name: Setup .NET Environment
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '9.0.x'   # adjust if needed
@@ -116,8 +116,8 @@ jobs:
           dotnet sonarscanner begin \
             /k:"sandipghosh_webapp-end-to-end-devops_49b3ad43-874c-4545-92e0-a632b694b804" \
             /d:sonar.host.url="${{ secrets.SONAR_HOST_URL }}" \
-            /d:sonar.token="${{ secrets.SONAR_TOKEN }}" \
-            /d:sonar.cs.opencover.reportsPaths="**/coverage.opencover.xml"
+            /d:sonar.token="${{ secrets.SONAR_TOKEN }}" 
+            #/d:sonar.cs.opencover.reportsPaths="**/coverage.opencover.xml"
 
       - name: Build solution
         run: dotnet build --configuration Release
