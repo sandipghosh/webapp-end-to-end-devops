@@ -48,17 +48,15 @@ jobs:
 
             # Check the code formatting
             echo "Check the code formatting for $proj"
-            dotnet format --verify-no-changes $proj
+            set +e   # allow non-zero exit codes
+            OUTPUT=$(dotnet format --verify-no-changes $proj 2>&1)
+            EXIT_CODE=$?
+            set -e   # re-enable fail-fast for later steps
 
-            #set +e   # allow non-zero exit codes
-            #OUTPUT=$(dotnet format --verify-no-changes 2>&1)
-            #EXIT_CODE=$?
-            #set -e   # re-enable fail-fast for later steps
-
-            #echo "$OUTPUT"
-            #if [ $EXIT_CODE -ne 0 ]; then
-            #  echo "⚠️ Code formatting issues found in the '$proj' project, but not failing the build."
-            #fi
+            echo "$OUTPUT"
+            if [ $EXIT_CODE -ne 0 ]; then
+              echo "⚠️ Code formatting issues found in the '$proj' project, but not failing the build."
+            fi
           done
 
   angular-scan:
