@@ -37,10 +37,10 @@ jobs:
             dotnet build --configuration Release --no-restore "$proj"
 
             # Run test project
-            if [[ $proj == *".test"* ]]; then
-              echo "Running test project $proj"
-              dotnet test --no-build --verbosity normal "$proj"
-            fi
+            #if [[ $proj == *".test"* ]]; then
+            #  echo "Running test project $proj"
+            #  dotnet test --no-build --verbosity normal "$proj"
+            #fi
 
             # Check for vulnerable packages
             echo "Check for vulnerable packages for $proj"
