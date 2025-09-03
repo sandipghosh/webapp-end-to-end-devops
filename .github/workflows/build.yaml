@@ -47,15 +47,18 @@ jobs:
             dotnet list "$proj" package --vulnerable
 
             # Check the code formatting
-            set +e   # allow non-zero exit codes
-            OUTPUT=$(dotnet format --verify-no-changes 2>&1)
-            EXIT_CODE=$?
-            set -e   # re-enable fail-fast for later steps
+            echo "Check the code formatting for $proj"
+            dotnet format --verify-no-changes $proj
 
-            echo "$OUTPUT"
-            if [ $EXIT_CODE -ne 0 ]; then
-              echo "⚠️ Code formatting issues found in the '$proj' project, but not failing the build."
-            fi
+            #set +e   # allow non-zero exit codes
+            #OUTPUT=$(dotnet format --verify-no-changes 2>&1)
+            #EXIT_CODE=$?
+            #set -e   # re-enable fail-fast for later steps
+
+            #echo "$OUTPUT"
+            #if [ $EXIT_CODE -ne 0 ]; then
+            #  echo "⚠️ Code formatting issues found in the '$proj' project, but not failing the build."
+            #fi
           done
 
   angular-scan:
