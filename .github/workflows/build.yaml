@@ -95,7 +95,8 @@ jobs:
 
   dotnet-sonerqube-scan:
     name: .Net Application Sonarqube Scanning
-    runs-on: [self-hosted,k8s,sonarqube]
+    #runs-on: [self-hosted,k8s,sonarqube]
+    runs-on: self-hosted
     steps:
       - name: Checkout
         uses: actions/checkout@v4
