@@ -8,7 +8,7 @@ on:
     
 jobs:
   detect-changes:
-    uses: ./.github/workflows/detect.changes.yaml
+    uses: ./.github/workflows/detect-changes.yaml
 
   #deploy:
   #  needs: [detect-changes]
