@@ -6,13 +6,13 @@ echo "Checking for changes in the services"
 
 # SERVICES[@] expand all the array elements
 for service in "${SERVICES[@]}"; do
-    if git diff --name-only HEAD~1 HEAD | grep -Ei "^webapp/$service/" || \
+    if git diff --name-only HEAD~1 HEAD | grep -Ei "^webapp/${service}/" || \
         [ "${GITHUB_EVENT_NAME}" == "workflow_dispatch" ]; then
 
-        CHANGED_SERVICES += ("$service")
-        echo "Changes detected in: $service."
+        CHANGED_SERVICES+=("${service}")
+        echo "Changes detected in: ${service}."
     else
-        echo "NO changes detected in: $service."
+        echo "NO changes detected in: ${service}."
     fi
 done
 
