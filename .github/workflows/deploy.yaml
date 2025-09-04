@@ -22,7 +22,7 @@ on:
 jobs:
   deploy-changes:
     runs-on: ubuntu-latest
-    if: ${{ inputs.has-changes == 'true' }}
+    #if: ${{ inputs.has-changes == 'true' }}
 
     # It allows you to run a single job definition multiple times with different inputs
     # For this case, the entire job will be executed 3 times, each for

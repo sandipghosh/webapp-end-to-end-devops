@@ -10,7 +10,7 @@ jobs:
   detect-changes:
     uses: ./.github/workflows/detect-changes.yaml
 
-  deploy:
+  deploy-changes:
     needs: [detect-changes]
     uses: ./.github/workflows/deploy.yaml
     permissions:
