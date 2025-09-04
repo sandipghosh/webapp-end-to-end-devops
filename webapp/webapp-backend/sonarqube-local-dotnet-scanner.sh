@@ -1,3 +1,5 @@
+#!/bin/bash
+
 dotnet sonarscanner begin \
     /k:"webapp-local-dotnet-scanner" \
     /d:sonar.host.url="http://localhost:9000"  \

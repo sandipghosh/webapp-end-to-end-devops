@@ -1,0 +1,14 @@
+name: Summary Workflow
+
+on:
+  workflow_call:
+
+jobs:
+  blank-job:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Print hello
+        run: echo "Hello from a blank job from summary workflow!"
