@@ -76,10 +76,10 @@ jobs:
           AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
           AWS_REGION: ${{ secrets.AWS_REGION }}
           GITHUB_SHA: ${{ github.sha }}
-        run: $BUILD_PUSH_PATH ${{ matrix.service }}
+        run: $BUILD_PUSH_PATH ${{ matrix.services }}
 
       #- name: Update helm values
-      #  run: $UPDATE_HELM_PATH ${{ matrix.service }}
+      #  run: $UPDATE_HELM_PATH ${{ matrix.services }}
 
       #- name: Commit helm changes
-      #  run: $COMMIT_HELM_PATH ${{ matrix.service }}
+      #  run: $COMMIT_HELM_PATH ${{ matrix.services }}
