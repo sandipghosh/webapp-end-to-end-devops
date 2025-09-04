@@ -42,4 +42,7 @@ echo "changed-services=${CHANGED_SERVICES[*]}" >> "$GITHUB_OUTPUT"
 echo "matrix={\"services\":${MATRIX_JSON}}" >> "$GITHUB_OUTPUT"
 
 echo "Service to build: ${CHANGED_SERVICES[*]}" 
-echo "Generated matrix: ${MATRIX_JSON}" 
+echo "Generated matrix: ${MATRIX_JSON}"  
+
+echo "----- DEBUG $GITHUB_OUTPUT -----"
+cat "$GITHUB_OUTPUT"
