@@ -32,6 +32,14 @@ jobs:
       # Even if one job fails, all other matrix jobs continue running until completion
       fail-fast: false
     
+    steps:
+      - name: Checkout the source code
+        uses: actions/checkout@v4
+
+      - name: Testing
+        run: echo "Testing.."
+
+
     # Permissions control what a workflow (or a specific job/step) 
     # can do with the GitHub token (GITHUB_TOKEN) that’s automatically provided during a run
     # Possible values for permission are as follows
@@ -47,36 +55,36 @@ jobs:
     #permissions:
     #  contents: write
 
-    env:
-      BUILD_PUSH_PATH: ./infra-ci-scripts/build-and-push-image.sh
-      UPDATE_HELM_PATH: ./infra-ci-scripts/update-helm-values.sh
-      COMMIT_HELM_PATH: ./infra-ci-scripts/commit-helm-image-changes.sh
-    steps:
-      - name: Checkout the source code
-        uses: actions/checkout@v4
+    #env:
+    #  BUILD_PUSH_PATH: ./infra-ci-scripts/build-and-push-image.sh
+    #  UPDATE_HELM_PATH: ./infra-ci-scripts/update-helm-values.sh
+    #  COMMIT_HELM_PATH: ./infra-ci-scripts/commit-helm-image-changes.sh
+    #steps:
+    #  - name: Checkout the source code
+    #    uses: actions/checkout@v4
 
-      - name: Make the scripts executable
-        run: |
-          chmod +x $BUILD_PUSH_PATH
-          chmod +x $UPDATE_HELM_PATH
-          chmod +x $COMMIT_HELM_PATH
+    #  - name: Make the scripts executable
+    #    run: |
+    #      chmod +x $BUILD_PUSH_PATH
+    #      chmod +x $UPDATE_HELM_PATH
+    #      chmod +x $COMMIT_HELM_PATH
 
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_REGION }}
+    #  - name: Configure AWS credentials
+    #    uses: aws-actions/configure-aws-credentials@v4
+    #    with:
+    #      aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+    #      aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+    #      aws-region: ${{ secrets.AWS_REGION }}
 
-      - name: Login to AWS ECR
-        uses: aws-actions/amazon-ecr-login@v2
+    #  - name: Login to AWS ECR
+    #    uses: aws-actions/amazon-ecr-login@v2
 
-      - name: Build and push images
-        env:
-          AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
-          AWS_REGION: ${{ secrets.AWS_REGION }}
-          GITHUB_SHA: ${{ github.sha }}
-        run: $BUILD_PUSH_PATH ${{ matrix.services }}
+    #  - name: Build and push images
+    #    env:
+    #      AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
+    #      AWS_REGION: ${{ secrets.AWS_REGION }}
+    #      GITHUB_SHA: ${{ github.sha }}
+    #    run: $BUILD_PUSH_PATH ${{ matrix.services }}
 
       #- name: Update helm values
       #  run: $UPDATE_HELM_PATH ${{ matrix.services }}
