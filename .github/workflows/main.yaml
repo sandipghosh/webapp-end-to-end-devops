@@ -13,8 +13,22 @@ jobs:
   deploy:
     needs: [detect-changes]
     uses: ./.github/workflows/deploy.yaml
+
+    # Permissions control what a workflow (or a specific job/step) 
+    # can do with the GitHub token (GITHUB_TOKEN) that’s automatically provided during a run
+    # Possible values for permission are as follows
+    # -------------------------------
+    # actions: read|write|none
+    # contents: read|write|none
+    # pull-requests: read|write|none
+    # issues: read|write|none
+    # packages: read|write|none
+    # deployments: read|write|none
+    # checks: read|write|none
+    # statuses: read|write|none
     permissions:
       contents: write
+      
     with:
       matrix: ${{ needs.detect-changes.outputs.matrix }}
       has-changes: ${{ needs.detect-changes.outputs.has-changes }}
