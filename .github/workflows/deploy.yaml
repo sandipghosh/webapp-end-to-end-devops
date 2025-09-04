@@ -20,7 +20,7 @@ on:
       AWS_ACCOUNT_ID:
         required: true
 jobs:
-  blank-job:
+  deploy-changes:
     runs-on: ubuntu-latest
     if: ${{ inputs.has-changes == 'true' }}
 
@@ -44,8 +44,8 @@ jobs:
     # deployments: read|write|none
     # checks: read|write|none
     # statuses: read|write|none
-    permissions:
-      contents: write
+    #permissions:
+    #  contents: write
 
     env:
       BUILD_PUSH_PATH: ./infra-ci-scripts/build-and-push-image.sh
