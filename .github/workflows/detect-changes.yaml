@@ -5,7 +5,7 @@ on:
 
 jobs:
   detect-changes:
-    runs-on: ubuntu:latest
+    runs-on: ubuntu-latest
     name: Detect changed services
     outputs:
       has-changes: ${{ steps.change-detection.outputs.has-changes }}
@@ -15,12 +15,12 @@ jobs:
       SHELL_SCRIPT_PATH: ./infra-ci-scripts/application-change-detection.sh
     steps:
       - name: Checking out the source code
-        uses: action/chaeckout@v4
+        uses: actions/chaeckout@v4
         with:
           fetch-depth: 2 # fetching the current and the previous commit to compare for change detection 
       
       - name: Making the script executable
-        uses: chmod +x $SHELL_SCRIPT_PATH
+        run: chmod +x $SHELL_SCRIPT_PATH
 
       - name: Detecting changed services
         id: change-detection
