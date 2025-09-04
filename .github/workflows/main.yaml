@@ -1,25 +1,25 @@
 name: Root Deployment Workflow
 
 on: 
-  push:
-    branches: [ gitops ]
-    paths: ['src/**']
+  #push:
+  #  branches: [ gitops ]
+  #  paths: ['src/**']
   workflow_dispatch:
     
 jobs:
   detect-changes:
     uses: .github/workflows/detect.changes.yaml
 
-  deploy:
-    needs: [detect-changes]
-    uses: .github/workflows/deploy.yaml
-
-    secrets:
-      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      AWS_REGION: ${{ secrets.AWS_REGION }}
-      AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
-
-  summary:
-    needs: [detect-changes, deploy]
-    uses: .github/workflows/summary.yaml
+  #deploy:
+  #  needs: [detect-changes]
+  #  uses: .github/workflows/deploy.yaml
+  #
+  #  secrets:
+  #    AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  #    AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  #    AWS_REGION: ${{ secrets.AWS_REGION }}
+  #    AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
+  #
+  #summary:
+  #  needs: [detect-changes, deploy]
+  #  uses: .github/workflows/summary.yaml
