@@ -15,7 +15,7 @@ jobs:
       SHELL_SCRIPT_PATH: ./infra-ci-scripts/application-change-detection.sh
     steps:
       - name: Checking out the source code
-        uses: actions/chaeckout@v4
+        uses: actions/checkout@v4
         with:
           fetch-depth: 2 # fetching the current and the previous commit to compare for change detection 
       
