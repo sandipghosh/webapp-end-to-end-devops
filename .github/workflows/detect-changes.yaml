@@ -2,6 +2,16 @@ name: Detect Changes Workflow
 
 on: 
   workflow_call:
+    outputs:
+      has-changes:
+        description: Whether any service changed
+        value: ${{ jobs.detect-changes.outputs.has-changes }}
+      matrix:
+        description: JSON matrix string
+        value: ${{ jobs.detect-changes.outputs.matrix }}
+      changed-services:
+        description: Space-separated changed services
+        value: ${{ jobs.detect-changes.outputs.changed-services }}
 
 jobs:
   detect-changes:
