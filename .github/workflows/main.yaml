@@ -13,6 +13,8 @@ jobs:
   deploy:
     needs: [detect-changes]
     uses: ./.github/workflows/deploy.yaml
+    permissions:
+      contents: write
     with:
       matrix: ${{ needs.detect-changes.outputs.matrix }}
       has-changes: ${{ needs.detect-changes.outputs.has-changes }}
