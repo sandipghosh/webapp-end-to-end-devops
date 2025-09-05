@@ -10,7 +10,7 @@ REPO_NAME="${NAMESPACE}/${SERVICE}"
 IMAGE_NAME="${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${REPO_NAME}"
 IMAGE_TAG="$(echo "${GITHUB_SHA}" | cut -c1-7)"
 
-echo "Building ${SERVICE}:${IMAGE_TAG}..."
+echo "Building docker image: ${SERVICE}:${IMAGE_TAG}"
 
 # Redirects the result of the "ecr describe-repositories" standard error (stderr) to /dev/null
 # /dev/null is a “black hole” device in Linux/Unix → anything written there is discarded.
@@ -21,12 +21,12 @@ echo "Building ${SERVICE}:${IMAGE_TAG}..."
 # "process 2>/dev/null" means standard error to “black hole” 
 # "process > /dev/null 2>&1" means standard output to “black hole” and send stderr to the same location as stdout.
 
-aws ecr describe-repositories \
-    --repository-names "${ECR_REPO}" 2>/dev/null || \
-aws ecr create-repository \
-    --repository-name "${ECR_REPO}" \
-    --image-scanning-configuration scanOnPush=true \
-    --encryption-configuration encryptionType=AES256
+#aws ecr describe-repositories \
+#    --repository-names "${ECR_REPO}" 2>/dev/null || \
+#aws ecr create-repository \
+#    --repository-name "${ECR_REPO}" \
+#    --image-scanning-configuration scanOnPush=true \
+#    --encryption-configuration encryptionType=AES256
     
 if !aws ecr describe-repositories \
     --repository-names "${REPO_NAME}" > /dev/null 2>&1; then
