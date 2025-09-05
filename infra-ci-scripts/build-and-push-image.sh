@@ -29,10 +29,12 @@ echo "Building docker image: ${SERVICE}:${IMAGE_TAG}"
 #    --encryption-configuration encryptionType=AES256
     
 if !aws ecr describe-repositories \
+    --region "${AWS_REGION}" \
     --repository-names "${REPO_NAME}" > /dev/null 2>&1; then
     echo "ECR Repository ${REPO_NAME} not found; creating a new repository ${REPO_NAME}"
 
     aws ecr create-repository \
+        --region "${AWS_REGION}" \
         --repository-name "${REPO_NAME}" \
         --image-scanning-configuration scanOnPush=true \
         --encryption-configuration encryptionType=AES256
