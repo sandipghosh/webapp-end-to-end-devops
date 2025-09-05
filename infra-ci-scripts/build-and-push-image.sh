@@ -21,33 +21,34 @@ echo "Building ${SERVICE}:${IMAGE_TAG}..."
 # "process 2>/dev/null" means standard error to “black hole” 
 # "process > /dev/null 2>&1" means standard output to “black hole” and send stderr to the same location as stdout.
 
-#aws ecr describe-repositories \
-#    --repository-names "${ECR_REPO}" 2>/dev/null || \
-#aws ecr create-repository \
-#    --repository-name "${ECR_REPO}" \
-#    --image-scanning-configuration scanOnPush=true \
-#    --encryption-configuration encryptionType=AES256
+aws ecr describe-repositories \
+    --repository-names "${ECR_REPO}" 2>/dev/null || \
+aws ecr create-repository \
+    --repository-name "${ECR_REPO}" \
+    --image-scanning-configuration scanOnPush=true \
+    --encryption-configuration encryptionType=AES256
+    
+if !aws ecr describe-repositories \
+    --repository-names "${REPO_NAME}" > /dev/null 2>&1; then
+    echo "ECR Repository ${REPO_NAME} not found; creating a new repository ${REPO_NAME}"
 
-#if !aws ecr describe-repositories \
-#    --repository-names "${REPO_NAME}" > /dev/null 2>&1; then
-#    echo "ECR Repository ${REPO_NAME} not found; creating a new repository ${REPO_NAME}"
-#
-#    aws ecr create-repository \
-#        --repository-name "${REPO_NAME}" \
-#        --image-scanning-configuration scanOnPush=true \
-#        --encryption-configuration encryptionType=AES256
-#else
-#    echo "ECR Repository ${REPO_NAME} exists.."
-#fi
-#
-## building docker image with 2 tags (1st one is from git commit SHA and the 2nd one is latest)
-#docker build -t "${IMAGE_NAME}:${IMAGE_TAG}" -t "${IMAGE_NAME}:latest" "./webapp/${SERVICE}"
-#echo "Build docker images with 2 tags (1st one is from git commit SHA and the 2nd one is latest)"
-#
-#docker push "${IMAGE_NAME}:${IMAGE_TAG}"
-#echo "Pushed the image ${IMAGE_NAME}:${IMAGE_TAG} to AWS ECR"
-#
-#docker push "${IMAGE_NAME}:latest" 
-#echo "Pushed the image ${IMAGE_NAME}:latest to AWS ECR"
+    aws ecr create-repository \
+        --repository-name "${REPO_NAME}" \
+        --image-scanning-configuration scanOnPush=true \
+        --encryption-configuration encryptionType=AES256
+else
+    echo "ECR Repository ${REPO_NAME} exists.."
+fi
+
+# building docker image with 2 tags (1st one is from git commit SHA and the 2nd one is latest)
+docker build -t "${IMAGE_NAME}:${IMAGE_TAG}" -t "${IMAGE_NAME}:latest" "./webapp/${SERVICE}"
+echo "Build docker images with 2 tags (1st one is from git commit SHA and the 2nd one is latest)"
+
+docker push "${IMAGE_NAME}:${IMAGE_TAG}"
+echo "Pushed the image ${IMAGE_NAME}:${IMAGE_TAG} to AWS ECR"
+
+docker push "${IMAGE_NAME}:latest" 
+echo "Pushed the image ${IMAGE_NAME}:latest to AWS ECR"
 
 echo "ECR_REPO=${IMAGE_NAME}" >> "$GITHUB_ENV"
+echo "Saving the container image URL into GitHub environment context"
