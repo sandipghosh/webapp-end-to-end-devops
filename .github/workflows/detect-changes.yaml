@@ -2,6 +2,8 @@ name: Detect Changes Workflow
 
 on: 
   workflow_call:
+    # From a reusable workflow back to the caller workflow
+    # When the caller (main.yaml) use uses: ./.github/workflows/something.yaml, it need a way to “return values” to the caller
     outputs:
       has-changes:
         description: Whether any service changed
@@ -17,6 +19,8 @@ jobs:
   detect-changes:
     runs-on: ubuntu-latest
     name: Detect changed services
+    # Between jobs in the same workflow.
+    # Let a job expose data to other jobs that depend on it.
     outputs:
       has-changes: ${{ steps.change-detection.outputs.has-changes }}
       matrix: ${{ steps.change-detection.outputs.matrix }}
@@ -27,7 +31,8 @@ jobs:
       - name: Checking out the source code
         uses: actions/checkout@v4
         with:
-          fetch-depth: 2 # fetching the current and the previous commit to compare for change detection 
+          # fetching the current and the previous commit to compare for change detection 
+          fetch-depth: 2 
       
       - name: Making the script executable
         run: chmod +x $SHELL_SCRIPT_PATH
