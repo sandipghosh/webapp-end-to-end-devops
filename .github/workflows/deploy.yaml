@@ -36,6 +36,7 @@ jobs:
       BUILD_PUSH_PATH: ./infra-ci-scripts/build-and-push-image.sh
       UPDATE_HELM_PATH: ./infra-ci-scripts/update-helm-values.sh
       COMMIT_HELM_PATH: ./infra-ci-scripts/commit-helm-image-changes.sh
+      
     steps:
       - name: Checkout the source code
         uses: actions/checkout@v4
@@ -63,8 +64,8 @@ jobs:
           GITHUB_SHA: ${{ github.sha }}
         run: $BUILD_PUSH_PATH ${{ matrix.services }}
 
-      #- name: Update helm values
-      #  run: $UPDATE_HELM_PATH ${{ matrix.services }}
+      - name: Update helm values
+        run: $UPDATE_HELM_PATH ${{ matrix.services }}
 
       #- name: Commit helm changes
       #  run: $COMMIT_HELM_PATH ${{ matrix.services }}
