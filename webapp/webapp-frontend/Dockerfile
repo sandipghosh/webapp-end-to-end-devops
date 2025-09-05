@@ -43,7 +43,6 @@ RUN mkdir -p /app/.angular/cache && chown -R tester:tester /app/.angular
 USER tester
 
 # Run tests with ChromeHeadless and disable sandbox
-# RUN npm run test -- --watch=false --browsers=ChromeHeadless --no-sandbox
 RUN npm run test -- --watch=false --browsers=ChromeHeadlessNoSandbox
 
 
