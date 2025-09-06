@@ -27,30 +27,55 @@ echo "Building docker image: ${SERVICE}:${IMAGE_TAG}"
 #    --repository-name "${ECR_REPO}" \
 #    --image-scanning-configuration scanOnPush=true \
 #    --encryption-configuration encryptionType=AES256
-    
-if !aws ecr describe-repositories \
-    --region "${AWS_REGION}" \
-    --repository-names "${REPO_NAME}" > /dev/null 2>&1; then
-    echo "ECR Repository ${REPO_NAME} not found; creating a new repository ${REPO_NAME}"
 
-    aws ecr create-repository \
-        --region "${AWS_REGION}" \
-        --repository-name "${REPO_NAME}" \
-        --image-scanning-configuration scanOnPush=true \
-        --encryption-configuration encryptionType=AES256
+aws sts get-caller-identity
+
+# 1) Try describe (show errors)
+if aws ecr describe-repositories --repository-names "${REPO_NAME}" --region "${AWS_REGION}" >/dev/null 2>&1; then
+  echo "ECR repository ${REPO_NAME} already exists."
 else
-    echo "ECR Repository ${REPO_NAME} exists.."
+  echo "Repository ${REPO_NAME} not found. Attempting to create..."
+  if aws ecr create-repository \
+       --repository-name "${REPO_NAME}" \
+       --image-scanning-configuration scanOnPush=true \
+       --encryption-configuration encryptionType=AES256 \
+       --region "${AWS_REGION}"; then
+    echo "Repository ${REPO_NAME} created successfully."
+  else
+    echo "ERROR: Failed to create repository ${REPO_NAME} in ${AWS_REGION}." >&2
+    # Re-run create without exit so we can print the AWS error details
+    aws ecr create-repository \
+      --repository-name "${REPO_NAME}" \
+      --image-scanning-configuration scanOnPush=true \
+      --encryption-configuration encryptionType=AES256 \
+      --region "${AWS_REGION}" || true
+    exit 2
+  fi
 fi
 
-# building docker image with 2 tags (1st one is from git commit SHA and the 2nd one is latest)
-docker build -t "${IMAGE_NAME}:${IMAGE_TAG}" -t "${IMAGE_NAME}:latest" "./webapp/${SERVICE}"
-echo "Build docker images with 2 tags (1st one is from git commit SHA and the 2nd one is latest)"
-
-docker push "${IMAGE_NAME}:${IMAGE_TAG}"
-echo "Pushed the image ${IMAGE_NAME}:${IMAGE_TAG} to AWS ECR"
-
-docker push "${IMAGE_NAME}:latest" 
-echo "Pushed the image ${IMAGE_NAME}:latest to AWS ECR"
-
-echo "ECR_REPO=${IMAGE_NAME}" >> "$GITHUB_ENV"
-echo "Saving the container image URL into GitHub environment context"
+#if !aws ecr describe-repositories \
+#    --region "${AWS_REGION}" \
+#    --repository-names "${REPO_NAME}" > /dev/null 2>&1; then
+#    echo "ECR Repository ${REPO_NAME} not found; creating a new repository ${REPO_NAME}"
+#
+#    aws ecr create-repository \
+#        --region "${AWS_REGION}" \
+#        --repository-name "${REPO_NAME}" \
+#        --image-scanning-configuration scanOnPush=true \
+#        --encryption-configuration encryptionType=AES256
+#else
+#    echo "ECR Repository ${REPO_NAME} exists.."
+#fi
+#
+## building docker image with 2 tags (1st one is from git commit SHA and the 2nd one is latest)
+#docker build -t "${IMAGE_NAME}:${IMAGE_TAG}" -t "${IMAGE_NAME}:latest" "./webapp/${SERVICE}"
+#echo "Build docker images with 2 tags (1st one is from git commit SHA and the 2nd one is latest)"
+#
+#docker push "${IMAGE_NAME}:${IMAGE_TAG}"
+#echo "Pushed the image ${IMAGE_NAME}:${IMAGE_TAG} to AWS ECR"
+#
+#docker push "${IMAGE_NAME}:latest" 
+#echo "Pushed the image ${IMAGE_NAME}:latest to AWS ECR"
+#
+#echo "ECR_REPO=${IMAGE_NAME}" >> "$GITHUB_ENV"
+#echo "Saving the container image URL into GitHub environment context"
