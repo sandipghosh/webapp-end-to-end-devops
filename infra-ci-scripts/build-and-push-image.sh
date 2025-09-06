@@ -67,10 +67,11 @@ fi
 #    echo "ECR Repository ${REPO_NAME} exists.."
 #fi
 #
-## building docker image with 2 tags (1st one is from git commit SHA and the 2nd one is latest)
-#docker build -t "${IMAGE_NAME}:${IMAGE_TAG}" -t "${IMAGE_NAME}:latest" "./webapp/${SERVICE}"
-#echo "Build docker images with 2 tags (1st one is from git commit SHA and the 2nd one is latest)"
-#
+
+# building docker image with 2 tags (1st one is from git commit SHA and the 2nd one is latest)
+docker build -t "${IMAGE_NAME}:${IMAGE_TAG}" -t "${IMAGE_NAME}:latest" "./webapp/${SERVICE}"
+echo "Build docker images with 2 tags (1st one is from git commit SHA and the 2nd one is latest)"
+
 #docker push "${IMAGE_NAME}:${IMAGE_TAG}"
 #echo "Pushed the image ${IMAGE_NAME}:${IMAGE_TAG} to AWS ECR"
 #
