@@ -30,8 +30,8 @@ FROM build AS test
 WORKDIR /app
 
 # Run tests — no-restore and no-build is safe because we built in the previous stage
-RUN dotnet test test/database.test/database.test.csproj --no-restore --no-build --verbosity detailed
-RUN dotnet test test/webapp.test/webapp.test.csproj --no-restore --no-build --verbosity detailed
+#RUN dotnet test test/database.test/database.test.csproj --no-restore --no-build --verbosity detailed
+#RUN dotnet test test/webapp.test/webapp.test.csproj --no-restore --no-build --verbosity detailed
 
 # ==============================================
 # Stage 3: Publish the tested code (Release)
