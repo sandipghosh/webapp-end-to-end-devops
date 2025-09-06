@@ -27,8 +27,8 @@ FROM build AS test
 WORKDIR /app
 
 # run tests (this will stop build if any test fails)
-RUN dotnet test test/database.test/database.test.csproj --no-restore --no-build --verbosity normal
-RUN dotnet test test/webapp.test/webapp.test.csproj --no-restore --no-build --verbosity normal
+RUN dotnet test test/database.test/database.test.csproj --no-restore --no-build --verbosity detailed
+RUN dotnet test test/webapp.test/webapp.test.csproj --no-restore --no-build --verbosity detailed
 
 # ==============================================
 # Stage 3: Publishing the tested code
