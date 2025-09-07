@@ -21,4 +21,4 @@ jobs:
           GITHUB_SHA: ${{ github.sha }}
           GITHUB_REF_NAME: ${{ github.ref_name }}
           GITHUB_ACTOR: ${{ github.actor }}
-        run: $SUMMARY_PATH ${{ inputs.changed-services }} ${{ inputs.has-changes }}
+        run: $SUMMARY_PATH "${{ inputs.changed-services }}" ${{ inputs.has-changes }}
