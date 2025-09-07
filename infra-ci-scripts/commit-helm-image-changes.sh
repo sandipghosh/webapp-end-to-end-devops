@@ -14,7 +14,8 @@ if [ -z "$IMAGE_TAG" ]; then
     IMAGE_TAG="$(git rev-parse --short=7 HEAD)"
 fi
 
-VALUES_FILE="./infra-chart/values.yaml"
+#VALUES_FILE="./infra-chart/values.yaml"
+VALUES_FILE="./infra-chart/custom-values.yaml"
 BRANCH="gitops"
 MAX_ATTEMPTS=3
 
