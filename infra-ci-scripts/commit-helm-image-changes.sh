@@ -9,7 +9,9 @@ fi
 # Prefer GITHUB_SHA if set (CI), otherwise use current HEAD
 IMAGE_TAG="$( (echo "${GITHUB_SHA:-}" | cut -c1-7) || true )"
 if [ -z "$IMAGE_TAG" ]; then
-  IMAGE_TAG="$(git rev-parse --short=7 HEAD)"
+    # Parses and prints first 7 characters revision identifiers 
+    # (40-character SHA-1 commit hash) of the current HEAD commit
+    IMAGE_TAG="$(git rev-parse --short=7 HEAD)"
 fi
 
 VALUES_FILE="./infra-chart/values.yaml"

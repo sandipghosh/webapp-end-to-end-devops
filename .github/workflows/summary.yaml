@@ -2,13 +2,23 @@ name: Summary Workflow
 
 on:
   workflow_call:
+    inputs:
+      changed-services:
+        required: false
+        type: string
+      has-changes:
+        required: true
+        type: string
 
 jobs:
   blank-job:
     runs-on: ubuntu-latest
+    env:
+      SUMMARY_PATH: ./infra-ci-scripts/summary-generator.sh
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Print hello
-        run: echo "Hello from a blank job from summary workflow!"
+      - name: Create deployment summery
+        env:
+          GITHUB_SHA: ${{ github.sha }}
+          GITHUB_REF_NAME: ${{ github.ref_name }}
+          GITHUB_ACTOR: ${{ github.actor }}
+        run: $SUMMARY_PATH ${{ inputs.changed-services }} ${{ inputs.has-changes }}
