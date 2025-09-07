@@ -1,8 +1,18 @@
 #!/bin/bash
 
-SERVICE="$1"
+SERVICE="${1:-}"
+if [ -z "$SERVICE" ]; then
+  echo "Usage: $0 <service-name>"
+  exit 2
+fi
+
+# Prefer GITHUB_SHA if set (CI), otherwise use current HEAD
+IMAGE_TAG="$( (echo "${GITHUB_SHA:-}" | cut -c1-7) || true )"
+if [ -z "$IMAGE_TAG" ]; then
+  IMAGE_TAG="$(git rev-parse --short=7 HEAD)"
+fi
+
 IMAGE_REPO="${ECR_REPO}"
-IMAGE_TAG="$(echo "${GITHUB_SHA}" | cut -c1-7)"
 VALUES_FILE="./infra-chart/values.yaml"
 
 echo "Updating Helm values for the service: ${SERVICE}"
