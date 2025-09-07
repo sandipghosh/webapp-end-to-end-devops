@@ -31,6 +31,8 @@ jobs:
       matrix: ${{ fromJson(inputs.matrix) }}
       # Even if one job fails, all other matrix jobs continue running until completion
       fail-fast: false
+      # Run matrix entries in sequentially
+      max-parallel: 1
 
     env:
       BUILD_PUSH_PATH: ./infra-ci-scripts/build-and-push-image.sh
