@@ -13,9 +13,9 @@ database:
   replicaCount: 1
   hostName: webapp-database
   image: 
-    repository: sandipdockerrepo/webapp-database
+    repository: 484954965141.dkr.ecr.ap-south-1.amazonaws.com/webapp/webapp-database
     pullPolicy: IfNotPresent
-    tag: "latest"
+    tag: "2d4e4c1"
   service: 
     type: ClusterIP
     containerPort: 3306
