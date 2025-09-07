@@ -18,7 +18,11 @@ jobs:
     steps:
       - name: Checkout the source code
         uses: actions/checkout@v4
-        
+
+      - name: Make the scripts executable
+        run: |
+          chmod +x $SUMMARY_PATH
+
       - name: Create deployment summery
         env:
           GITHUB_SHA: ${{ github.sha }}
