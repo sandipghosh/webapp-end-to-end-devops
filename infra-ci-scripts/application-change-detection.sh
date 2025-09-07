@@ -1,6 +1,6 @@
 #!/bin/bash
 #SERVICES=("webapp-database" "webapp-backend" "webapp-frontend")
-SERVICES=("webapp-database" "webapp-backend")
+SERVICES=("webapp-frontend")
 CHANGED_SERVICES=()
 
 echo "Checking for changes in the services"
