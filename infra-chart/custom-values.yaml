@@ -8,7 +8,7 @@ backend:
   hostName: webapp-backend
   image: 
     repository: 484954965141.dkr.ecr.ap-south-1.amazonaws.com/webapp/webapp-backend
-    tag: "0177ee8"
+    tag: "423b442"
 
 frontend:
   hostName: webapp-frontend
