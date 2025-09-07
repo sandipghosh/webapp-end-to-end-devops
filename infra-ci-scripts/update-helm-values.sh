@@ -10,9 +10,10 @@ echo "Repository: ${IMAGE_REPO}"
 echo "Tag: ${IMAGE_TAG}"
 echo "Values file: ${VALUES_FILE}"
 
-[[ ! -f "${VALUES_FILE}" || && echo "Values file not found: ${VALUES_FILE}" && exit 1 ]]
+[[ ! -f "${VALUES_FILE}" ]] || && echo "Values file not found: ${VALUES_FILE}" && exit 1
 
 # Backup the helm values file before making any changes
+cp "${VALUES_FILE}" "${VALUES_FILE}.backup"
 
 awk -v repo="$IMAGE_REPO" -v tag="$IMAGE_TAG" -v target_host="$SERVICE" '
   # detect top-level section name like "database: or backend: or frontend:", capture section name
@@ -99,6 +100,6 @@ awk -v repo="$IMAGE_REPO" -v tag="$IMAGE_TAG" -v target_host="$SERVICE" '
 
   # default: print unchanged
   { print }
-' ${VALUES_FILE} > ${VALUES_FILE}.backup
+' "${VALUES_FILE}" > "${VALUES_FILE}.backup"
 
-cat ${VALUES_FILE}.backup
+cat "${VALUES_FILE}.backup"
