@@ -69,5 +69,5 @@ jobs:
       - name: Update helm values
         run: $UPDATE_HELM_PATH ${{ matrix.services }}
 
-      #- name: Commit helm changes
-      #  run: $COMMIT_HELM_PATH ${{ matrix.services }}
+      - name: Commit helm changes
+        run: $COMMIT_HELM_PATH ${{ matrix.services }}

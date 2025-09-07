@@ -100,6 +100,17 @@ awk -v repo="$IMAGE_REPO" -v tag="$IMAGE_TAG" -v target_host="$SERVICE" '
 
   # default: print unchanged
   { print }
-' "${VALUES_FILE}" > "${VALUES_FILE}.backup"
+' "${VALUES_FILE}.backup" > "${VALUES_FILE}"
 
-cat "${VALUES_FILE}.backup"
+echo "Updated file content"
+cat "${VALUES_FILE}"
+
+if grep -q "${IMAGE_REPO}" "${VALUES_FILE}" && grep -q "${IMAGE_TAG}" "${VALUES_FILE}"; then
+    echo "Updated file: ${VALUES_FILE}"
+else
+    echo "Update failed - restoring backup"
+    mv "${VALUES_FILE}.backup" > "${VALUES_FILE}"
+    exit 1
+fi
+
+rm "${VALUES_FILE}.backup"
