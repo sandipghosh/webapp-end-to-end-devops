@@ -7,8 +7,8 @@ database:
 backend:
   hostName: webapp-backend
   image: 
-    repository: sandipdockerrepo/webapp-backend
-    tag: "latest"
+    repository: 484954965141.dkr.ecr.ap-south-1.amazonaws.com/webapp/webapp-backend
+    tag: "0177ee8"
 
 frontend:
   hostName: webapp-frontend
