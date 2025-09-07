@@ -126,9 +126,9 @@ frontend:
   replicaCount: 1
   hostName: webapp-frontend
   image: 
-    repository: sandipdockerrepo/webapp-frontend
+    repository: 484954965141.dkr.ecr.ap-south-1.amazonaws.com/webapp/webapp-frontend
     pullPolicy: IfNotPresent
-    tag: "latest"
+    tag: "d4713cc"
   service: 
     type: ClusterIP
     containerPort: 80
