@@ -1,4 +1,3 @@
-using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 
@@ -10,6 +9,7 @@ public class ApplicationDbContextFactory : IDesignTimeDbContextFactory<Applicati
     {
         var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
 
+        var isTestConnectionActivated = bool.TryParse(Environment.GetEnvironmentVariable("TEST_USE_INMEMORY"), out var parsed) ? parsed : false;
         var dbHostName = Environment.GetEnvironmentVariable("WEBAPP_DB_HOST") ?? "localhost";
         var dbHostPort = Environment.GetEnvironmentVariable("WEBAPP_DB_PORT") ?? "3306";
         var dbName = Environment.GetEnvironmentVariable("WEBAPP_DB_NAME") ?? "app_db";
@@ -20,9 +20,13 @@ public class ApplicationDbContextFactory : IDesignTimeDbContextFactory<Applicati
         var connectionString = $"server={dbHostName};port={dbHostPort};database={dbName};user={dbUser};password={dbPassword};";
 
         // 👇 Put your connection string here or load from environment
-        optionsBuilder.UseMySql(connectionString,
-            ServerVersion.AutoDetect(connectionString)
-        );
+
+        if (isTestConnectionActivated)
+            optionsBuilder.UseInMemoryDatabase("TestDb");
+        else
+            optionsBuilder.UseMySql(connectionString,
+                ServerVersion.AutoDetect(connectionString)
+            );
 
         return new ApplicationDbContext(optionsBuilder.Options);
     }
