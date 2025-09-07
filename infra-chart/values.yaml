@@ -49,7 +49,7 @@ backend:
   image: 
     repository: 484954965141.dkr.ecr.ap-south-1.amazonaws.com/webapp/webapp-backend
     pullPolicy: IfNotPresent
-    tag: "d4713cc"
+    tag: "aafe835"
   service: 
     type: ClusterIP
     containerPort: 80
