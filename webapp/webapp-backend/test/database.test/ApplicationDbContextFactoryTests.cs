@@ -17,6 +17,8 @@ public class ApplicationDbContextFactoryTests
         Environment.SetEnvironmentVariable("WEBAPP_DB_USER", "sandip");
         Environment.SetEnvironmentVariable("WEBAPP_DB_PASSWORD", "sandev@1984");
 
+        Environment.SetEnvironmentVariable("TEST_USE_INMEMORY", "true");
+
         var factory = new ApplicationDbContextFactory();
 
         // Act
