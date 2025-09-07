@@ -10,7 +10,7 @@ jobs:
   detect-changes:
     uses: ./.github/workflows/detect-changes.yaml
 
-  deploy:
+  deploy-changes:
     needs: [detect-changes]
     uses: ./.github/workflows/deploy.yaml
 
@@ -37,7 +37,10 @@ jobs:
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       AWS_REGION: ${{ secrets.AWS_REGION }}
       AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
-  #
-  #summary:
-  #  needs: [detect-changes, deploy]
-  #  uses: .github/workflows/summary.yaml
+  
+  summary:
+    needs: [detect-changes, deploy-changes]
+    with:
+      changed-services: ${{ needs.detect-changes.outputs.changed-services }}
+      has-changes: ${{ needs.detect-changes.outputs.has-changes }}
+    uses: ./.github/workflows/summary.yaml
