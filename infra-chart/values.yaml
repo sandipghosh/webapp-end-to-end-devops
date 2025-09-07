@@ -13,9 +13,9 @@ database:
   replicaCount: 1
   hostName: webapp-database
   image: 
-    repository: 484954965141.dkr.ecr.ap-south-1.amazonaws.com/webapp/webapp-database
+    repository: sandipdockerrepo/webapp-database
     pullPolicy: IfNotPresent
-    tag: "8dfb1db"
+    tag: "latest"
   service: 
     type: ClusterIP
     containerPort: 3306
@@ -47,9 +47,9 @@ backend:
   replicaCount: 1
   hostName: webapp-backend
   image: 
-    repository: 484954965141.dkr.ecr.ap-south-1.amazonaws.com/webapp/webapp-backend
+    repository: sandipdockerrepo/webapp-backend
     pullPolicy: IfNotPresent
-    tag: "aafe835"
+    tag: "latest"
   service: 
     type: ClusterIP
     containerPort: 80
@@ -125,9 +125,9 @@ frontend:
   replicaCount: 1
   hostName: webapp-frontend
   image: 
-    repository: 484954965141.dkr.ecr.ap-south-1.amazonaws.com/webapp/webapp-frontend
+    repository: sandipdockerrepo/webapp-frontend
     pullPolicy: IfNotPresent
-    tag: "aafe835"
+    tag: "latest"
   service: 
     type: ClusterIP
     containerPort: 80
