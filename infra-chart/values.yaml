@@ -15,7 +15,7 @@ database:
   image: 
     repository: 484954965141.dkr.ecr.ap-south-1.amazonaws.com/webapp/webapp-database
     pullPolicy: IfNotPresent
-    tag: "aafe835"
+    tag: "4de4302"
   service: 
     type: ClusterIP
     containerPort: 3306
