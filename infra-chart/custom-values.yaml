@@ -13,5 +13,5 @@ backend:
 frontend:
   hostName: webapp-frontend
   image: 
-    repository: sandipdockerrepo/webapp-frontend
-    tag: "latest"
+    repository: 484954965141.dkr.ecr.ap-south-1.amazonaws.com/webapp/webapp-frontend
+    tag: "423b442"
