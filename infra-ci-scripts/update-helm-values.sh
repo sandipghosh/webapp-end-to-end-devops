@@ -10,7 +10,7 @@ echo "Repository: ${IMAGE_REPO}"
 echo "Tag: ${IMAGE_TAG}"
 echo "Values file: ${VALUES_FILE}"
 
-[[ ! -f "${VALUES_FILE}" ]] || && echo "Values file not found: ${VALUES_FILE}" && exit 1
+[[ ! -f "${VALUES_FILE}" ]] && echo "Values file not found: ${VALUES_FILE}" && exit 1
 
 # Backup the helm values file before making any changes
 cp "${VALUES_FILE}" "${VALUES_FILE}.backup"
