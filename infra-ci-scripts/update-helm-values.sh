@@ -13,7 +13,8 @@ if [ -z "$IMAGE_TAG" ]; then
 fi
 
 IMAGE_REPO="${ECR_REPO}"
-VALUES_FILE="./infra-chart/values.yaml"
+VALUES_FILE="./infra-chart/custom-values.yaml"
+#VALUES_FILE="./infra-chart/values.yaml"
 
 echo "Updating Helm values for the service: ${SERVICE}"
 echo "Repository: ${IMAGE_REPO}"

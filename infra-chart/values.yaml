@@ -63,7 +63,6 @@ backend:
     WEBAPP_DB_USER: sandip
     WEBAPP_DB_PASSWORD: sandev@1984
     WEBAPP_CLIENT_URL: "http://{{ .Values.ingress.host }}:{{ .Values.ingress.exposedPort }}{{ (index .Values.ingress.frontend 0).hostPath}}"
-    #WEBAPP_CLIENT_URL: "http://{{ .Values.frontend.hostName }}:{{ .Values.frontend.service.exposePort }}{{.Values.frontend.service.exposePath}}"
   command:
     - /bin/sh
     - -c
