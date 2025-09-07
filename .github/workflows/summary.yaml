@@ -16,6 +16,9 @@ jobs:
     env:
       SUMMARY_PATH: ./infra-ci-scripts/summary-generator.sh
     steps:
+      - name: Checkout the source code
+        uses: actions/checkout@v4
+        
       - name: Create deployment summery
         env:
           GITHUB_SHA: ${{ github.sha }}
